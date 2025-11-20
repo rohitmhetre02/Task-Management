@@ -1,0 +1,199 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Task Management System API",
+    "version": "1.0.0",
+    "description": "Swagger documentation for Task Management System with JWT auth, role-based access, tasks management, and admin controls."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+
+  "paths": {
+
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Rohit",
+                "email": "rohit@example.com",
+                "password": "secret123",
+                "role": "user"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "rohit@example.com",
+                "password": "secret123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful"
+          },
+          "400": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+
+    "/tasks": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "Get all tasks (admin sees all, user sees own)",
+        "responses": {
+          "200": { "description": "Tasks fetched" }
+        }
+      },
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "Create new task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "title": "Test Task",
+                "description": "Task description",
+                "status": "To Do",
+                "priority": "Medium"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Task created" },
+          "400": { "description": "Validation error" }
+        }
+      }
+    },
+
+    "/tasks/{id}": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "Get task by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Task fetched" },
+          "404": { "description": "Task not found" }
+        }
+      },
+      "put": {
+        "tags": ["Tasks"],
+        "summary": "Update task (only owner)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "title": "Updated Task",
+                "status": "In Progress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Task updated" },
+          "403": { "description": "Not authorized" }
+        }
+      },
+      "delete": {
+        "tags": ["Tasks"],
+        "summary": "Delete task (only owner)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Task deleted" },
+          "403": { "description": "Not authorized" }
+        }
+      }
+    },
+
+    "/admin/users": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get all non-admin users",
+        "responses": {
+          "200": { "description": "Users fetched" },
+          "403": { "description": "Admin only" }
+        }
+      }
+    },
+
+    "/admin/users/{id}": {
+      "delete": {
+        "tags": ["Admin"],
+        "summary": "Delete a non-admin user",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true }
+        ],
+        "responses": {
+          "200": { "description": "User deleted" },
+          "403": { "description": "Admin only" }
+        }
+      }
+    },
+
+    "/admin/stats": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get system stats",
+        "responses": {
+          "200": { "description": "Stats returned" },
+          "403": { "description": "Admin only" }
+        }
+      }
+    }
+  }
+}
