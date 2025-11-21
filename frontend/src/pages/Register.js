@@ -14,7 +14,8 @@ export default function Register() {
   const submit = async (e) => {
     e.preventDefault();
     try {
-      const res = await API.post('/api/auth/register', form);
+      const res = await API.post('/api/v1/auth/register', form);
+
       localStorage.setItem('token', res.data.token);
       setUser(res.data.user);
       setMsg('Registered!');
