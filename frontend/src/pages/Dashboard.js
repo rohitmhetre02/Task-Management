@@ -49,7 +49,7 @@ const TasksView = ({ isAdmin }) => {
   
   const fetchTasks = async () => {
     try {
-      const res = await API.get('/tasks');
+      const res = await API.get('/api/v1/tasks');
       setTasks(res.data);
     } catch (err) { console.log('Could not fetch tasks.'); }
   };
@@ -62,7 +62,7 @@ const TasksView = ({ isAdmin }) => {
     e.preventDefault();
     if (!form.title) { setMsg('Title is required'); return; }
     try {
-      await API.post('/tasks', form);
+      await API.post('/api/v1/tasks', form);
       setForm({ title: '', description: '', status: 'In Progress', priority: 'Medium' });
       setMsg('');
       fetchTasks();
@@ -76,7 +76,7 @@ const TasksView = ({ isAdmin }) => {
     e.preventDefault();
     if (!form.title) { setMsg('Title is required'); return; }
     try {
-      await API.put(`/tasks/${selectedTask._id}`, form);
+      await API.put(`/api/v1/tasks/${selectedTask._id}`, form);
       setMsg('');
       fetchTasks();
       setEditModalOpen(false);
@@ -107,7 +107,7 @@ const TasksView = ({ isAdmin }) => {
 
   const confirmDelete = async () => {
     try {
-        await API.delete(`/tasks/${taskToDelete}`);
+        await API.delete(`/api/v1/tasks/${taskToDelete}`);
         fetchTasks();
         setDeleteConfirmOpen(false);
         setTaskToDelete(null);
@@ -119,7 +119,7 @@ const TasksView = ({ isAdmin }) => {
 
   const handleStatusChange = async (taskId, status) => {
     try {
-      await API.put(`/tasks/${taskId}`, { status });
+      await API.put(`/api/v1/tasks/${taskId}`, { status });
       fetchTasks();
     } catch (err) {
       console.log('Error updating status');
@@ -323,7 +323,7 @@ const UserManagementView = () => {
 
     const fetchUsers = async () => {
         try {
-            const res = await API.get('/admin/users');
+            const res = await API.get('/api/v1/admin/users');
             setUsers(res.data.filter(user => user.role !== 'admin'));
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to fetch users');
@@ -337,7 +337,7 @@ const UserManagementView = () => {
     const deleteUser = async (userId) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
             try {
-                await API.delete(`/admin/users/${userId}`);
+                await API.delete(`/api/v1/admin/users/${userId}`);
                 fetchUsers();
             } catch (err) {
                 setError(err.response?.data?.message || 'Failed to delete user');

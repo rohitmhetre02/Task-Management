@@ -13,7 +13,15 @@ connectDB();
 
 app.use(helmet());
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://task-management-l2sf.onrender.com"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+}));
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 app.use('/api/v1/auth', require('./routes/auth'));
